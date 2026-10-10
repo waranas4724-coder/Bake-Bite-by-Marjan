@@ -104,6 +104,7 @@ const upload=multer({storage,limits:{fileSize:150*1024*1024},fileFilter:(req,fil
 const app=express();
 app.use(express.json({limit:"2mb"})); app.use(express.urlencoded({extended:true})); app.use(cookieParser());
 app.use("/uploads",express.static(UPLOAD_DIR));
+app.get("/manifest.webmanifest",(req,res)=>{res.type("application/manifest+json").sendFile(path.join(__dirname,"public","manifest.webmanifest"));});
 app.use(express.static(path.join(__dirname,"public")));
 
 app.get("/api/settings",(req,res)=>res.json(settings()));
@@ -136,9 +137,10 @@ app.post("/api/orders",async(req,res)=>{
    emailSent=true;
   }catch(e){console.error("SMTP error",e.message);}
  }
- const normalizedItems=typeof items==="string"?items:JSON.stringify(items);
- const msg=encodeURIComponent(`Hi Bake & Bite by Marjan! I want to place an order.\nOrder #${result.lastInsertRowid}\nCustomer name: ${customer_name}\nPhone/WhatsApp: ${phone}\nEmail: ${email||""}\nDelivery address: ${address||""}\nCake order: ${normalizedItems}\nSpecial request: ${note||""}`);
- res.json({ok:true,order_id:result.lastInsertRowid,emailSent,whatsapp:`https://wa.me/${s.whatsapp.replace(/\D/g,"")}?text=${msg}`});
+ const orderItems=typeof items==="string"?JSON.parse(items||"[]"):items;
+ const itemLines=(Array.isArray(orderItems)?orderItems:[]).map((it,i)=>`${i+1}. ${it.title||"Cake"}\\n   Category: ${it.category||"Cakes"}\\n   Size: ${it.size||"Not specified"}\\n   Quantity: ${it.qty||1}${it.image?`\\n   Cake photo: ${it.image}`:""}`).join("\\n\\n");
+ const msg=encodeURIComponent(`Hello Bake & Bite by Marjan! I'd like to place this order.\\n\\nORDER #${result.lastInsertRowid}\\nCustomer: ${customer_name}\\nPhone/WhatsApp: ${phone}\\nEmail: ${email||"Not provided"}\\nDelivery address: ${address||"Not provided"}\\n\\nCAKE DETAILS\\n${itemLines||"Please confirm cake details."}\\n\\nSpecial request: ${note||"None"}\\nPayment method: ${payment_method||"To be discussed"}`);
+ res.json({ok:true,order_id:result.lastInsertRowid,emailSent,whatsapp:`https://wa.me/${s.whatsapp.replace(/\\D/g,"")}?text=${msg}`});
 });
 
 app.get("/admin",(req,res)=>res.sendFile(path.join(__dirname,"public","admin.html")));
