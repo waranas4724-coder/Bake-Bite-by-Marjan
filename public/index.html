@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Bake & Bite by Marjan | Cakes</title>
-<link rel="stylesheet" href="/style.css"></head>
+<meta name="theme-color" content="#8f1721"><meta name="description" content="Premium celebration cakes from Bake & Bite by Marjan."><link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/assets/icon-192.png"><link rel="stylesheet" href="/style.css"></head>
 <body>
-<div class="top">Freshly baked • Chattogram delivery <span>বাংলা / English</span></div>
+<div class="top">Freshly baked • Chattogram delivery <span>বাংলা / English</span></div><div class="installBar" id="installBar"><button id="installApp" hidden>Install App</button><button id="homeShortcut">Add to Home Screen</button><span id="installHint" aria-live="polite"></span></div>
 <header>
   <button class="hamb" onclick="document.querySelector('nav').classList.toggle('open')">☰</button>
   <a class="logo" href="/"><img src="/assets/app-logo.png" alt="Bake & Bite logo"><b>Bake & Bite<small>by Marjan</small></b></a>
@@ -26,4 +26,4 @@
 <aside class="drawer" id="drawer"><div class="drawerHead"><h2>Your order</h2><button onclick="closeAll()">×</button></div><div id="cartItems"></div><div class="drawerBottom"><button class="btn dark full" onclick="checkout()">Continue Order →</button></div></aside>
 <div class="modal" id="modal"><button class="x" onclick="closeAll()">×</button><div id="modalBody"></div></div>
 <div class="modal" id="checkout"><button class="x" onclick="closeCheckout()">×</button><div class="checkoutBody"><label>ORDER DETAILS</label><h2>Complete your order</h2><div id="selectedCakes"></div><form id="orderForm"><input name="customer_name" required placeholder="Customer name"><input name="phone" required placeholder="Phone / WhatsApp"><input name="email" type="email" placeholder="Email address"><textarea name="address" required placeholder="Delivery address"></textarea><textarea name="note" placeholder="Cake message, date, theme or special request"></textarea><button class="btn dark full" type="submit">Order on WhatsApp →</button></form><p class="hint">Cake name, size and quantity are added automatically. Press the button to open WhatsApp with the complete order.</p></div></div>
-<script src="/app.js"></script></body></html>
+<script src="/app.js"></script><script src="/pwa.js" defer></script></body></html>
