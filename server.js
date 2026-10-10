@@ -30,6 +30,12 @@ CREATE TABLE IF NOT EXISTS orders(
  address TEXT, note TEXT, items TEXT, payment_method TEXT, transaction_id TEXT,
  status TEXT DEFAULT 'new', created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TABLE IF NOT EXISTS ratings(
+ id INTEGER PRIMARY KEY AUTOINCREMENT, post_id INTEGER NOT NULL, rating INTEGER NOT NULL, created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS comments(
+ id INTEGER PRIMARY KEY AUTOINCREMENT, post_id INTEGER NOT NULL, name TEXT NOT NULL, comment TEXT NOT NULL, created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
 `);
 const defaults={
  brand:"Bake & Bite by Marjan",
@@ -107,8 +113,15 @@ app.get("/api/posts",(req,res)=>{
  if(q){sql+=" AND (title LIKE ? OR description LIKE ? OR category LIKE ?)"; const x="%"+q+"%";args.push(x,x,x);}
  if(cat&&cat!=="All") {sql+=" AND category=?";args.push(cat);}
  sql+=" ORDER BY featured DESC, id DESC";
- res.json(db.prepare(sql).all(...args));
+ const rows=db.prepare(sql).all(...args);
+ const stats=db.prepare("SELECT post_id, AVG(rating) rating_avg, COUNT(*) rating_count FROM ratings GROUP BY post_id").all();
+ const map=Object.fromEntries(stats.map(x=>[x.post_id,x]));
+ res.json(rows.map(p=>({...p,rating_avg:map[p.id]?.rating_avg||0,rating_count:map[p.id]?.rating_count||0})));
 });
+app.get("/api/posts/:id/rating",(req,res)=>{const r=db.prepare("SELECT AVG(rating) rating_avg, COUNT(*) rating_count FROM ratings WHERE post_id=?").get(req.params.id);res.json({rating_avg:r.rating_avg||0,rating_count:r.rating_count||0});});
+app.post("/api/posts/:id/rating",(req,res)=>{const rating=Number(req.body?.rating);if(!Number.isInteger(rating)||rating<1||rating>5)return res.status(400).json({error:"Rating must be 1-5."});db.prepare("INSERT INTO ratings(post_id,rating) VALUES(?,?)").run(req.params.id,rating);const r=db.prepare("SELECT AVG(rating) rating_avg, COUNT(*) rating_count FROM ratings WHERE post_id=?").get(req.params.id);res.json({rating_avg:r.rating_avg||0,rating_count:r.rating_count||0});});
+app.get("/api/posts/:id/comments",(req,res)=>res.json(db.prepare("SELECT id,name,comment,created_at FROM comments WHERE post_id=? ORDER BY id DESC").all(req.params.id)));
+app.post("/api/posts/:id/comments",(req,res)=>{const name=String(req.body?.name||"").trim(),comment=String(req.body?.comment||"").trim();if(!name||!comment)return res.status(400).json({error:"Name and comment are required."});if(name.length>80||comment.length>1000)return res.status(400).json({error:"Comment is too long."});const r=db.prepare("INSERT INTO comments(post_id,name,comment) VALUES(?,?,?)").run(req.params.id,name,comment);res.json({ok:true,id:r.lastInsertRowid});});
 app.post("/api/orders",async(req,res)=>{
  const {customer_name,phone,email,address,note,items,payment_method,transaction_id}=req.body||{};
  if(!customer_name||!phone||!items) return res.status(400).json({error:"Name, phone and order items are required."});
@@ -123,7 +136,8 @@ app.post("/api/orders",async(req,res)=>{
    emailSent=true;
   }catch(e){console.error("SMTP error",e.message);}
  }
- const msg=encodeURIComponent(`Hi Bake & Bite by Marjan! I want to place an order.\nOrder #${result.lastInsertRowid}\nName: ${customer_name}\nPhone: ${phone}\nAddress: ${address||""}\nPayment: ${payment_method||"To confirm"}\nTransaction ID: ${transaction_id||"Pending"}\nItems: ${typeof items==="string"?items:JSON.stringify(items)}\nNote: ${note||""}`);
+ const normalizedItems=typeof items==="string"?items:JSON.stringify(items);
+ const msg=encodeURIComponent(`Hi Bake & Bite by Marjan! I want to place an order.\nOrder #${result.lastInsertRowid}\nCustomer name: ${customer_name}\nPhone/WhatsApp: ${phone}\nEmail: ${email||""}\nDelivery address: ${address||""}\nCake order: ${normalizedItems}\nSpecial request: ${note||""}`);
  res.json({ok:true,order_id:result.lastInsertRowid,emailSent,whatsapp:`https://wa.me/${s.whatsapp.replace(/\D/g,"")}?text=${msg}`});
 });
 
