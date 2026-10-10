@@ -12,12 +12,12 @@ services:
         sync: false
       - key: SESSION_SECRET
         generateValue: true
-      - key: DATA_DIR
-        value: /var/data
-      - key: DB_FILE
-        value: /var/data/bakebite.sqlite
-      - key: UPLOAD_DIR
-        value: /var/data/uploads
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_STORAGE_BUCKET
+        value: cake-media
       - key: SMTP_HOST
         sync: false
       - key: SMTP_PORT
@@ -28,7 +28,3 @@ services:
         sync: false
       - key: SMTP_FROM
         sync: false
-    disk:
-      name: bake-bite-data
-      mountPath: /var/data
-      sizeGB: 1
