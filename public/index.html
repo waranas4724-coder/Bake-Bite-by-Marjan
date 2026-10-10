@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bake & Bite by Marjan | Cakes</title>
+<link rel="stylesheet" href="/style.css"></head>
+<body>
+<div class="top">Freshly baked • Chattogram delivery <span>বাংলা / English</span></div>
+<header>
+  <button class="hamb" onclick="document.querySelector('nav').classList.toggle('open')">☰</button>
+  <a class="logo" href="/"><img src="/assets/brand-card.webp"><b>Bake & Bite<small>by Marjan</small></b></a>
+  <div class="search">⌕ <input id="search" placeholder="Search cakes, flavours, occasions..."></div>
+  <nav><a href="#cakes">Cakes</a><a href="#types">Cake Types</a><a href="#occasions">Occasions</a><a href="#custom">Custom Cakes</a><a href="#contact">Contact</a></nav>
+  <button class="cart" onclick="openCart()">🛒 <i id="count">0</i></button>
+</header>
+<section class="hero">
+  <div><label>HOMEMADE • FRESH • MADE WITH LOVE</label><h1>Make every celebration <em>extra sweet.</em></h1><p>Discover beautiful cakes for birthdays, anniversaries, surprises and every special moment. Select a cake and order directly on WhatsApp.</p><a class="btn dark" href="#cakes">Explore Cakes →</a></div>
+  <div class="heroCake"><div class="cake"><span>🍓</span></div><aside>🎂<b>Freshly baked</b><small>Made for your moment</small></aside></div>
+</section>
+<div class="filters" id="types"><button class="active" data-cat="All">All Cakes</button><button data-cat="Chocolate">Chocolate</button><button data-cat="Red Velvet">Red Velvet</button><button data-cat="Cupcakes">Cupcakes</button><button data-cat="Photo Cakes">Photo Cakes</button><button data-cat="Designer">Designer</button><button data-cat="Kids">Kids</button><button data-cat="Eggless">Eggless</button></div>
+<main id="cakes"><div class="head"><div><label>OUR COLLECTION</label><h2>Popular cakes</h2></div><select id="sort"><option value="new">Newest</option><option value="name">Name A–Z</option></select></div><div class="grid" id="grid"></div><p class="empty" id="empty" hidden>No cakes found.</p></main>
+<section class="wide" id="occasions"><label>SHOP BY OCCASION</label><h2>Made for every celebration</h2><div class="occasionGrid"><button data-cat="Birthday">🎈<b>Birthday</b><small>Make their day sweeter</small></button><button data-cat="Premium">💍<b>Anniversary</b><small>Celebrate your story</small></button><button data-cat="Kids">🧁<b>Kids</b><small>Fun themed favourites</small></button><button data-cat="Chocolate">🎁<b>Surprise</b><small>A little joy, anytime</small></button></div></section>
+<section class="custom" id="custom"><div><label>PERSONALISED CAKES</label><h2>Have your own cake idea?</h2><p>Send us a reference photo, message or theme. We will confirm the design and order details on WhatsApp.</p><a class="btn dark" target="_blank" href="https://wa.me/8801880610740?text=Hi%20Bake%20%26%20Bite%2C%20I%20want%20a%20custom%20cake.">Order Custom Cake →</a></div><img src="/assets/brand-card.webp"></section>
+<section class="info"><div><b>📍 Location</b><span>Chattogram, Bangladesh</span></div><div><b>💬 WhatsApp</b><span>+8801880610740</span></div><div><b>✉️ Email</b><span>marjanchybc@gmail.com</span></div><div><b>💳 Payment</b><span>bKash • Nagad • Rocket</span></div></section>
+<footer id="contact"><div><h3>Bake & Bite <small>by Marjan</small></h3><p>Homemade Cakes & Snacks<br>Delicious in every bite.</p></div><div><b>Order</b><a href="https://wa.me/8801880610740">WhatsApp</a><a href="mailto:marjanchybc@gmail.com">Email</a><a href="https://www.facebook.com/share/1BchmfWfnV/" target="_blank">Facebook Page</a></div><div><b>Payment</b><span>bKash</span><span>Nagad</span><span>Rocket</span><small>Payment details are shown during checkout.</small></div></footer>
+
+<div class="shade" id="shade" onclick="closeAll()"></div>
+<aside class="drawer" id="drawer"><div class="drawerHead"><h2>Your order</h2><button onclick="closeAll()">×</button></div><div id="cartItems"></div><div class="drawerBottom"><button class="btn dark full" onclick="checkout()">Continue Order →</button></div></aside>
+<div class="modal" id="modal"><button class="x" onclick="closeAll()">×</button><div id="modalBody"></div></div>
+<div class="modal" id="checkout"><button class="x" onclick="closeCheckout()">×</button><div class="checkoutBody"><label>ORDER DETAILS</label><h2>Complete your order</h2><form id="orderForm"><input name="customer_name" required placeholder="Your name"><input name="phone" required placeholder="Phone / WhatsApp"><input name="email" type="email" placeholder="Email address"><textarea name="address" required placeholder="Delivery address in Chattogram"></textarea><select name="payment_method"><option value="">Payment method</option><option>bKash</option><option>Nagad</option><option>Rocket</option><option>Pay later / Confirm on WhatsApp</option></select><input name="transaction_id" placeholder="Transaction ID (if already paid)"><textarea name="note" placeholder="Cake message, date, size, theme or special request"></textarea><button class="btn dark full" type="submit">Place Order →</button></form><p class="hint">After submitting, WhatsApp will open with your order. The shop can confirm the final amount and payment instructions.</p></div></div>
+<script src="/app.js"></script></body></html>
